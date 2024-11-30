@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>41023224L李姿瑾_作業四</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #basemapToggle {
+        position: absolute;
+        top: 2%;
+        right: 10px;
+        z-index: 99;
+        background-color: white;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.22/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/Graphic",
+        "esri/widgets/Compass",
+        "esri/widgets/ScaleBar"
+      ], (Map, MapView, Graphic, Compass, ScaleBar) => {
+        const map = new Map({
+          basemap: "gray-vector"
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [121.527328, 25.02603],
+          zoom: 15
+        });
+
+        const compass = new Compass({
+          view: view
+        });
+        view.ui.add(compass, "top-left");
+
+        const scaleBar = new ScaleBar({
+          view: view,
+          unit: "metric"
+        });
+        view.ui.add(scaleBar, "bottom-left");
+
+        const point = {
+          type: "point",
+          longitude: 121.527328,
+          latitude: 25.02603
+        };
+
+        const symbol = {
+          type: "simple-marker",
+          color: "blue",
+          size: "12px",
+          outline: {
+            color: "white",
+            width: 2
+          }
+        };
+
+        const popupTemplate = {
+          title: "國立台灣師範大學校本部",
+          content: `
+            <b>地址:</b> 臺北市大安區和平東路一段162號<br>
+            <b>說明:</b> 百年傳承世紀典範。
+          `
+        };
+
+        const pointGraphic = new Graphic({
+          geometry: point,
+          symbol: symbol,
+          popupTemplate: popupTemplate
+        });
+
+        view.graphics.add(pointGraphic);
+
+        const basemapSelect = document.getElementById("basemapSelect");
+        basemapSelect.addEventListener("change", (event) => {
+          map.basemap = event.target.value;
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="basemapToggle">
+      <label for="basemapSelect">Change Basemap</label>
+      <select id="basemapSelect">
+        <option value="gray-vector">gray-vector</option>
+        <option value="streets">streets</option>
+        <option value="satellite">satellite</option>
+        <option value="topo">topo</option>
+      </select>
+    </div>
+
+    <div id="viewDiv"></div>
+  </body>
+</html>
